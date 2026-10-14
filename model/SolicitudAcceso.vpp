@@ -1,0 +1,11 @@
+class SolicitudAcceso is subclass of Tipos
+-- Etapa E2: Registro para una Solicitud de Acceso e invariante local
+
+types
+  -- TODO (E2): Definir registro public SolicitudAcceso :: ...
+  -- Campos base: id, usuario, recurso, riesgo, mfaVerificado, estado
+  -- Nota técnica: Considerar incluir el dispositivo (DispositivoId o estado de salud del dispositivo)
+  -- para evaluar la Regla R2 (Dispositivo comprometido -> DENEGAR) en E7 y E8.
+  -- Invariante: inv s == s.riesgo <= 100;
+
+end SolicitudAcceso

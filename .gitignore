@@ -1,0 +1,13 @@
+# Archivos generados por VDMTools / Overture IDE
+*.vdmde
+*.tc
+vdm.tc
+*.log
+*.out
+*.rtf
+
+# Archivos de sistema operativo e IDEs
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

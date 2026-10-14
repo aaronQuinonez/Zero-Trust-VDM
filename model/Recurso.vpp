@@ -1,0 +1,10 @@
+class Recurso is subclass of Tipos
+-- Etapa E4: Representación del objeto protegido y su nivel de criticidad
+
+instance variables
+  -- TODO (E4): Definir id (RecursoId), nombre (seq of char), critico (bool)
+
+operations
+  -- TODO (E4/E7): Definir constructor y métodos de consulta
+
+end Recurso

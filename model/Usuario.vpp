@@ -1,0 +1,12 @@
+class Usuario is subclass of Tipos
+-- Etapa E3: Uso de Set para permisos asociados al usuario
+-- Etapa E4: Definición de atributos y operaciones de la clase Usuario
+
+instance variables
+  -- TODO (E3/E4): Definir id (UsuarioId), rol (Rol), activo (bool)
+  -- TODO (E3): Definir permisos : set of RecursoId := {};
+
+operations
+  -- TODO (E4/E7): Definir constructor y métodos de consulta/modificación
+
+end Usuario

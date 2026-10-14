@@ -1,0 +1,12 @@
+class Tipos
+-- Etapa E1: Identificación de tipos Quote y Token
+-- Quote: EstadoAcceso, NivelRiesgo, Rol
+-- Token: UsuarioId, RecursoId, DispositivoId, SolicitudId
+
+types
+  -- TODO (E1): Definir tipos Quote (valores cerrados)
+  -- Nota técnica: Alinear si EstadoAcceso incluirá <EVALUANDO> para la etapa E9.
+
+  -- TODO (E1): Definir tipos Token (identificadores abstractos)
+
+end Tipos

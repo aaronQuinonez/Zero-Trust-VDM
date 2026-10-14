@@ -1,0 +1,18 @@
+@startuml
+' Etapa E4: Diagrama de clases del Sistema de Control de Acceso Zero Trust
+' TODO (E4): Detallar atributos, tipos VDM++ y métodos de cada clase
+
+class Usuario {
+}
+
+class Recurso {
+}
+
+class MotorZeroTrust {
+}
+
+Usuario --> Recurso : solicita >
+MotorZeroTrust --> Usuario : evalua >
+MotorZeroTrust --> Recurso : protege >
+
+@enduml

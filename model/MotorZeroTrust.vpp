@@ -1,0 +1,17 @@
+class MotorZeroTrust is subclass of SolicitudAcceso
+-- Etapa E3: Uso de Seq para el historial ordenado de solicitudes
+-- Etapa E5: Uso de Map para relacionar IDs con objetos y permisos
+-- Etapa E6: Invariantes globales del sistema
+-- Etapa E7: Operaciones EvaluarAcceso y RevocarAcceso
+
+instance variables
+  -- TODO (E3): historial : seq of SolicitudAcceso := [];
+  -- TODO (E5): usuarios : map UsuarioId to Usuario := {|->};
+  -- TODO (E5): recursos : map RecursoId to Recurso := {|->};
+  -- TODO (E5): permisos : map UsuarioId to set of RecursoId := {|->};
+  -- TODO (E6): Definir invariantes globales (inv)
+
+operations
+  -- TODO (E7): Implementar EvaluarAcceso() y RevocarAcceso() con pre y post condiciones
+
+end MotorZeroTrust

@@ -1,0 +1,10 @@
+class Pruebas is subclass of MotorZeroTrust
+-- Etapa E8: Casos de prueba (Casos 1 al 5) y análisis de cobertura (tcov / rtinfo)
+
+instance variables
+  -- TODO (E8): Declarar instancias de prueba (motor, usuarios, recursos, solicitudes)
+
+operations
+  -- TODO (E8): Implementar pruebas de casos válidos, denegados, revocados y cobertura 100%
+
+end Pruebas
