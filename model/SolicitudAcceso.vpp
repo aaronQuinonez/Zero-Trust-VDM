@@ -1,11 +1,22 @@
-class SolicitudAcceso is subclass of Tipos
--- Etapa E2: Registro para una Solicitud de Acceso e invariante local
+-- ============================================================
+-- SolicitudAcceso.vpp
+-- Etapa E2: Registro de solicitud de acceso e invariante de riesgo
+-- Proyecto: Sistema de Control de Acceso Zero Trust con VDM++
+-- Depende de: Tipos.vpp (E1)
+-- ============================================================
+class SolicitudAcceso
 
 types
-  -- TODO (E2): Definir registro public SolicitudAcceso :: ...
-  -- Campos base: id, usuario, recurso, riesgo, mfaVerificado, estado
-  -- Nota técnica: Considerar incluir el dispositivo (DispositivoId o estado de salud del dispositivo)
-  -- para evaluar la Regla R2 (Dispositivo comprometido -> DENEGAR) en E7 y E8.
-  -- Invariante: inv s == s.riesgo <= 100;
+
+  public SolicitudAcceso ::
+    id                : Tipos`SolicitudId
+    usuario           : Tipos`UsuarioId
+    recurso           : Tipos`RecursoId
+    dispositivo       : Tipos`DispositivoId
+    dispositivoValido : bool
+    riesgo            : nat
+    mfaVerificado     : bool
+    estado            : Tipos`EstadoAcceso
+  inv s == s.riesgo <= 100;
 
 end SolicitudAcceso

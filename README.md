@@ -20,7 +20,7 @@ El proyecto propone modelar y verificar formalmente un motor de autorización (*
 ## Plan de Desarrollo Progresivo
 - [x] **E0:** Definir alcance, estructura de carpetas y `README.md`.
 - [x] **E1:** Identificación de tipos `Quote` y `Token` (`model/Tipos.vpp`).
-- [ ] **E2:** Registro e invariante para una solicitud de acceso (`model/SolicitudAcceso.vpp`).
+- [x] **E2:** Registro e invariante para una solicitud de acceso (`model/SolicitudAcceso.vpp`).
 - [ ] **E3:** Uso de `Seq` (historial) y `Set` (permisos) (`model/Usuario.vpp`).
 - [ ] **E4:** Diagrama de clases inicial (`docs/clases.puml` y `model/Recurso.vpp`).
 - [ ] **E5:** Uso del tipo `Map` para asociar entidades y permisos (`model/MotorZeroTrust.vpp`).
