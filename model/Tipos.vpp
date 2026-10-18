@@ -1,12 +1,30 @@
 class Tipos
--- Etapa E1: Identificación de tipos Quote y Token
--- Quote: EstadoAcceso, NivelRiesgo, Rol
--- Token: UsuarioId, RecursoId, DispositivoId, SolicitudId
+-- Etapa E1: Identificacion de tipos Quote y Token del modelo Zero Trust
 
 types
-  -- TODO (E1): Definir tipos Quote (valores cerrados)
-  -- Nota técnica: Alinear si EstadoAcceso incluirá <EVALUANDO> para la etapa E9.
+  -- 4.1 Tipos Quote: listas cerradas de valores conocidos por el modelo
+  public EstadoAcceso =
+    <PENDIENTE> |
+    <EVALUANDO> |
+    <AUTORIZADO> |
+    <DENEGADO> |
+    <REVOCADO>;
 
-  -- TODO (E1): Definir tipos Token (identificadores abstractos)
+  public NivelRiesgo =
+    <BAJO> |
+    <MEDIO> |
+    <ALTO> |
+    <CRITICO>;
+
+  public Rol =
+    <USUARIO> |
+    <ADMINISTRADOR> |
+    <AUDITOR>;
+
+  -- 4.2 Tipos Token: identificadores abstractos unicos
+  public UsuarioId     = token;
+  public RecursoId     = token;
+  public DispositivoId = token;
+  public SolicitudId   = token;
 
 end Tipos
