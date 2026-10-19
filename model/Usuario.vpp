@@ -3,10 +3,34 @@ class Usuario is subclass of Tipos
 -- Etapa E4: Definición de atributos y operaciones de la clase Usuario
 
 instance variables
-  -- TODO (E3/E4): Definir id (UsuarioId), rol (Rol), activo (bool)
-  -- TODO (E3): Definir permisos : set of RecursoId := {};
+  id : UsuarioId;
+  rol : Rol;
+  activo : bool;
+  permisos : set of RecursoId := {};
 
 operations
-  -- TODO (E4/E7): Definir constructor y métodos de consulta/modificación
+  public Usuario : UsuarioId * Rol * bool ==> Usuario
+  Usuario(uid, r, a) ==
+  (
+    id := uid;
+    rol := r;
+    activo := a
+  );
+
+  public GetId : () ==> UsuarioId
+  GetId() == return id;
+
+  public GetRol : () ==> Rol
+  GetRol() == return rol;
+
+  public EsActivo : () ==> bool
+  EsActivo() == return activo;
+
+  public GetPermisos : () ==> set of RecursoId
+  GetPermisos() == return permisos;
+
+  public AsignarPermiso : RecursoId ==> ()
+  AsignarPermiso(rid) ==
+    permisos := permisos union {rid};
 
 end Usuario

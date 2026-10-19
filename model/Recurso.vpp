@@ -2,9 +2,26 @@ class Recurso is subclass of Tipos
 -- Etapa E4: Representación del objeto protegido y su nivel de criticidad
 
 instance variables
-  -- TODO (E4): Definir id (RecursoId), nombre (seq of char), critico (bool)
+  id : RecursoId;
+  nombre : seq of char;
+  critico : bool;
 
 operations
-  -- TODO (E4/E7): Definir constructor y métodos de consulta
+  public Recurso : RecursoId * seq of char * bool ==> Recurso
+  Recurso(rid, n, c) ==
+  (
+    id := rid;
+    nombre := n;
+    critico := c
+  );
+
+  public GetId : () ==> RecursoId
+  GetId() == return id;
+
+  public GetNombre : () ==> seq of char
+  GetNombre() == return nombre;
+
+  public EsCritico : () ==> bool
+  EsCritico() == return critico;
 
 end Recurso

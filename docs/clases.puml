@@ -1,14 +1,32 @@
 @startuml
 ' Etapa E4: Diagrama de clases del Sistema de Control de Acceso Zero Trust
-' TODO (E4): Detallar atributos, tipos VDM++ y métodos de cada clase
 
 class Usuario {
+  - id : UsuarioId
+  - rol : Rol
+  - activo : bool
+  - permisos : set of RecursoId
+  + GetId() : UsuarioId
+  + GetRol() : Rol
+  + EsActivo() : bool
+  + GetPermisos() : set of RecursoId
+  + AsignarPermiso(RecursoId)
 }
 
 class Recurso {
+  - id : RecursoId
+  - nombre : seq of char
+  - critico : bool
+  + GetId() : RecursoId
+  + GetNombre() : seq of char
+  + EsCritico() : bool
 }
 
 class MotorZeroTrust {
+  - historial : seq of SolicitudAcceso
+  - usuarios : map UsuarioId to Usuario
+  - recursos : map RecursoId to Recurso
+  - permisos : map UsuarioId to set of RecursoId
 }
 
 Usuario --> Recurso : solicita >
