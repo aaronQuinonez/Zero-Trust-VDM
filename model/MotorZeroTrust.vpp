@@ -1,17 +1,52 @@
-class MotorZeroTrust is subclass of SolicitudAcceso
--- Etapa E3: Uso de Seq para el historial ordenado de solicitudes
--- Etapa E5: Uso de Map para relacionar IDs con objetos y permisos
--- Etapa E6: Invariantes globales del sistema
--- Etapa E7: Operaciones EvaluarAcceso y RevocarAcceso
+class MotorZeroTrust is subclass of Tipos
 
 instance variables
-  -- TODO (E3): historial : seq of SolicitudAcceso := [];
-  -- TODO (E5): usuarios : map UsuarioId to Usuario := {|->};
-  -- TODO (E5): recursos : map RecursoId to Recurso := {|->};
-  -- TODO (E5): permisos : map UsuarioId to set of RecursoId := {|->};
-  -- TODO (E6): Definir invariantes globales (inv)
+
+  private historial :
+    seq of SolicitudAcceso`SolicitudAcceso := [];
+
+  private usuarios :
+    map UsuarioId to Usuario := {|->};
+
+  private recursos :
+    map RecursoId to Recurso := {|->};
+
+  private permisos :
+    map UsuarioId to set of RecursoId := {|->};
+
+inv
+  (dom permisos subset dom usuarios) and (forall uid in set dom permisos & permisos(uid) subset dom recursos);
 
 operations
-  -- TODO (E7): Implementar EvaluarAcceso() y RevocarAcceso() con pre y post condiciones
+
+  public RegistrarUsuario : Usuario ==> ()
+  RegistrarUsuario(u) ==
+    usuarios := usuarios ++ {u.GetId() |-> u}
+  pre
+    u.GetId() not in set dom usuarios;
+
+  public RegistrarRecurso : Recurso ==> ()
+  RegistrarRecurso(r) ==
+    recursos := recursos ++ {r.GetId() |-> r}
+  pre
+    r.GetId() not in set dom recursos;
+
+  public ConcederPermiso : UsuarioId * RecursoId ==> ()
+  ConcederPermiso(uid, rid) ==
+  (
+    if uid in set dom permisos
+    then
+      permisos :=
+        permisos ++
+        {uid |-> permisos(uid) union {rid}}
+    else
+      permisos :=
+        permisos ++
+        {uid |-> {rid}}
+  )
+  pre
+    uid in set dom usuarios
+    and
+    rid in set dom recursos;
 
 end MotorZeroTrust
