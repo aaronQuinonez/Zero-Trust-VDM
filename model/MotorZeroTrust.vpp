@@ -48,5 +48,70 @@ operations
     uid in set dom usuarios
     and
     rid in set dom recursos;
+  
+  public EvaluarAcceso : SolicitudAcceso`SolicitudAcceso ==> EstadoAcceso
+  EvaluarAcceso(sol) ==
+  (
+    dcl decision : EstadoAcceso := <DENEGADO>;
+    dcl reqMFA : bool := false;
+
+    if sol.usuario in set dom usuarios and usuarios(sol.usuario).EsActivo() and sol.recurso in set dom recursos then
+    (
+      reqMFA := recursos(sol.recurso).EsCritico();
+      
+      if sol.usuario in set dom permisos and sol.recurso in set permisos(sol.usuario) then
+      (
+        if sol.dispositivoValido and sol.riesgo < 80 then
+        (
+          if reqMFA then
+          (
+            if sol.mfaVerificado then decision := <AUTORIZADO>
+          )
+          else
+          (
+            decision := <AUTORIZADO>
+          )
+        )
+      )
+    );
+
+    let solEvaluada = mu(sol, estado |-> decision) in
+    (
+      historial := historial ^ [solEvaluada];
+      return decision;
+    )
+  )
+  pre 
+    (forall s in set elems historial & s.id <> sol.id)
+  post 
+    len historial = len historial~ + 1 and 
+    historial(len historial).id = sol.id;
+
+  public RevocarAcceso : SolicitudId ==> bool
+  RevocarAcceso(solId) ==
+  (
+    dcl revocado : bool := false;
+    dcl nuevoHistorial : seq of SolicitudAcceso`SolicitudAcceso := [];
+
+    for i = 1 to len historial do
+    (
+      if historial(i).id = solId and historial(i).estado = <AUTORIZADO> then
+      (
+        nuevoHistorial := nuevoHistorial ^ [mu(historial(i), estado |-> <REVOCADO>)];
+        revocado := true;
+      )
+      else
+      (
+        nuevoHistorial := nuevoHistorial ^ [historial(i)];
+      )
+    );
+
+    historial := nuevoHistorial;
+    return revocado;
+  )
+  pre 
+    len historial > 0
+  post 
+    len historial = len historial~;
 
 end MotorZeroTrust
