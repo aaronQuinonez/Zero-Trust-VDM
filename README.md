@@ -9,6 +9,7 @@ El proyecto propone modelar y verificar formalmente un motor de autorización (*
 * Alvarez Llave, Fabian Andre
 * Condori Caira, Antony Beltran
 * Quiñonez Delgado, Aaron Fernando
+* Riveros Valeriano Sebastian Alfredo
 * Sencia Ale, Bryan Daniel
 * Yauli Merma, Diego Raul
 
@@ -23,8 +24,8 @@ El proyecto propone modelar y verificar formalmente un motor de autorización (*
 - [x] **E2:** Registro e invariante para una solicitud de acceso (`model/SolicitudAcceso.vpp`).
 - [x] **E3:** Uso de `Seq` (historial) y `Set` (permisos) (`model/Usuario.vpp`).
 - [x] **E4:** Diagrama de clases inicial (`docs/clases.puml` y `model/Recurso.vpp`).
-- [ ] **E5:** Uso del tipo `Map` para asociar entidades y permisos (`model/MotorZeroTrust.vpp`).
-- [ ] **E6:** Invariantes globales del sistema (`model/MotorZeroTrust.vpp`).
-- [ ] **E7:** Operaciones del motor Zero Trust: evaluar, autorizar, denegar y revocar (`model/MotorZeroTrust.vpp`).
+- [X] **E5:** Uso del tipo `Map` para asociar entidades y permisos (`model/MotorZeroTrust.vpp`).
+- [X] **E6:** Invariantes globales del sistema (`model/MotorZeroTrust.vpp`).
+- [X] **E7:** Operaciones del motor Zero Trust: evaluar, autorizar, denegar y revocar (`model/MotorZeroTrust.vpp`).
 - [ ] **E8:** Casos de prueba y análisis de cobertura (`model/Pruebas.vpp`).
 - [ ] **E9:** Estados, transiciones y propiedades críticas para *Model Checking*.
