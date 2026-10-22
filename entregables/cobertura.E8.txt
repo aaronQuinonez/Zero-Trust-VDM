@@ -1,0 +1,35 @@
+Initializing specification ... done
+>> create p := new Pruebas()
+>> print p.run()
+(no return value)
+>> print p.caso5()
+C:\Users\sxrv\UNSA\semestre-2026_B\5-AFEV\Zero-Trust-VDM\model\Pruebas.vpp, l. 77, c. 31:
+  Run-Time Error 300: Type invariant was broken
+    actual value: mk_SolicitudAcceso`SolicitudAcceso( mk_token( 900 ), mk_token( 1 ), mk_token( 10 ), mk_token( 50 ), true, 120, true, <PENDIENTE> )
+    expected type: SolicitudAcceso`SolicitudAcceso
+>> tcov write vdm.tc
+>> rtinfo vdm.tc
+  100%      1  Pruebas`run
+  100%      1  Pruebas`caso5
+  100%      9  Pruebas`Verifica
+  100%  Pruebas
+  100%     48  Recurso`GetId
+  100%     24  Recurso`Recurso
+  100%     30  Recurso`EsCritico
+  100%      3  Recurso`GetNombre
+  100%  Recurso
+  100%     54  Usuario`GetId
+  100%      3  Usuario`GetRol
+  100%     24  Usuario`Usuario
+  100%     30  Usuario`EsActivo
+  100%      3  Usuario`GetPermisos
+  100%      6  Usuario`AsignarPermiso
+  100%  Usuario
+  100%     30  MotorZeroTrust`EvaluarAcceso
+  100%     10  MotorZeroTrust`RevocarAcceso
+  100%     24  MotorZeroTrust`ConcederPermiso
+  100%     24  MotorZeroTrust`RegistrarRecurso
+  100%     24  MotorZeroTrust`RegistrarUsuario
+  100%  MotorZeroTrust
+
+Total Coverage: 100%
