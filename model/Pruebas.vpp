@@ -1,10 +1,79 @@
-class Pruebas is subclass of MotorZeroTrust
--- Etapa E8: Casos de prueba (Casos 1 al 5) y análisis de cobertura (tcov / rtinfo)
+class Pruebas is subclass of Tipos
 
 instance variables
-  -- TODO (E8): Declarar instancias de prueba (motor, usuarios, recursos, solicitudes)
+  motor : MotorZeroTrust := new MotorZeroTrust();
 
 operations
-  -- TODO (E8): Implementar pruebas de casos válidos, denegados, revocados y cobertura 100%
+
+  private Verifica : bool ==> ()
+  Verifica(cond) == skip
+  pre cond;
+
+  public run : () ==> ()
+  run() ==
+  (
+    dcl u1 : UsuarioId := mk_token(1);
+    dcl u2 : UsuarioId := mk_token(2);
+    dcl r1 : RecursoId := mk_token(10);
+    dcl r2 : RecursoId := mk_token(20);
+    dcl d1 : DispositivoId := mk_token(50);
+    dcl usr1 : Usuario := new Usuario(u1, <USUARIO>, true);
+    dcl usr2 : Usuario := new Usuario(u2, <USUARIO>, true);
+    dcl rec1 : Recurso := new Recurso(r1, "Servidor", false);
+    dcl rec2 : Recurso := new Recurso(r2, "BaseDatos", true);
+
+    usr1.AsignarPermiso(r1);
+    usr1.AsignarPermiso(r2);
+
+    motor.RegistrarUsuario(usr1);
+    motor.RegistrarUsuario(usr2);
+    motor.RegistrarRecurso(rec1);
+    motor.RegistrarRecurso(rec2);
+
+    for all rid in set usr1.GetPermisos() do
+      motor.ConcederPermiso(usr1.GetId(), rid);
+
+    Verifica(usr1.GetRol() = <USUARIO>);
+    Verifica(rec1.GetNombre() = "Servidor");
+    Verifica(
+      motor.EvaluarAcceso(
+        mk_SolicitudAcceso`SolicitudAcceso(
+          mk_token(100), u1, r1, d1, true, 20, false, <PENDIENTE>))
+      = <AUTORIZADO>);
+
+    Verifica(
+      motor.EvaluarAcceso(
+        mk_SolicitudAcceso`SolicitudAcceso(
+          mk_token(101), u2, r1, d1, true, 10, false, <PENDIENTE>))
+      = <DENEGADO>);
+
+    Verifica(
+      motor.EvaluarAcceso(
+        mk_SolicitudAcceso`SolicitudAcceso(
+          mk_token(102), u1, r1, d1, true, 85, false, <PENDIENTE>))
+      = <DENEGADO>);
+
+    Verifica(
+      motor.EvaluarAcceso(
+        mk_SolicitudAcceso`SolicitudAcceso(
+          mk_token(103), u1, r2, d1, true, 10, false, <PENDIENTE>))
+      = <DENEGADO>);
+
+    Verifica(
+      motor.EvaluarAcceso(
+        mk_SolicitudAcceso`SolicitudAcceso(
+          mk_token(104), u1, r2, d1, true, 10, true, <PENDIENTE>))
+      = <AUTORIZADO>);
+    Verifica(motor.RevocarAcceso(mk_token(104)) = true);
+    Verifica(motor.RevocarAcceso(mk_token(104)) = false);
+
+    return
+  );
+
+  public caso5 : () ==> SolicitudAcceso`SolicitudAcceso
+  caso5() ==
+    return mk_SolicitudAcceso`SolicitudAcceso(
+             mk_token(900), mk_token(1), mk_token(10), mk_token(50),
+             true, 120, true, <PENDIENTE>);
 
 end Pruebas
