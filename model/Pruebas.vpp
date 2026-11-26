@@ -76,4 +76,85 @@ operations
              mk_token(900), mk_token(1), mk_token(10), mk_token(50),
              true, 120, true, <PENDIENTE>);
 
+  -- Cada grupo usa su propio motor para poder repetirlo en cualquier orden.
+  private MotorDePrueba : () ==> MotorZeroTrust
+  MotorDePrueba() ==
+  (
+    dcl m : MotorZeroTrust := new MotorZeroTrust();
+    dcl activo : UsuarioId := mk_token(1);
+    dcl inactivo : UsuarioId := mk_token(2);
+    dcl recurso : RecursoId := mk_token(10);
+    m.RegistrarUsuario(new Usuario(activo, <USUARIO>, true));
+    m.RegistrarUsuario(new Usuario(inactivo, <USUARIO>, false));
+    m.RegistrarRecurso(new Recurso(recurso, "Servidor", false));
+    m.ConcederPermiso(activo, recurso);
+    m.ConcederPermiso(inactivo, recurso);
+    return m
+  );
+
+  private SolicitudBase : () ==> SolicitudAcceso`SolicitudAcceso
+  SolicitudBase() ==
+    return mk_SolicitudAcceso`SolicitudAcceso(
+      mk_token(200), mk_token(1), mk_token(10), mk_token(50),
+      true, 79, false, <PENDIENTE>);
+
+  public decisionesE8 : () ==> seq of EstadoAcceso
+  decisionesE8() ==
+  (
+    dcl m : MotorZeroTrust := MotorDePrueba();
+    dcl base : SolicitudAcceso`SolicitudAcceso := SolicitudBase();
+    dcl resultados : seq of EstadoAcceso := [];
+    -- Mismo usuario, recurso y dispositivo para los dos lados del umbral.
+    for sol in [
+      base,
+      mu(base, id |-> mk_token(201), riesgo |-> 80),
+      mu(base, id |-> mk_token(202), dispositivoValido |-> false),
+      mu(base, id |-> mk_token(203), usuario |-> mk_token(2)),
+      mu(base, id |-> mk_token(204), usuario |-> mk_token(99)),
+      mu(base, id |-> mk_token(205), recurso |-> mk_token(99))
+    ] do
+      resultados := resultados ^ [m.EvaluarAcceso(sol)];
+    Verifica(resultados = [<AUTORIZADO>, <DENEGADO>, <DENEGADO>,
+                            <DENEGADO>, <DENEGADO>, <DENEGADO>]);
+    return resultados
+  );
+
+  -- Ejecutar por separado. Cada operacion provoca una precondicion concreta.
+  public idRepetido : () ==> EstadoAcceso
+  idRepetido() ==
+  (
+    dcl m : MotorZeroTrust := MotorDePrueba();
+    dcl sol : SolicitudAcceso`SolicitudAcceso := SolicitudBase();
+    Verifica(m.EvaluarAcceso(sol) = <AUTORIZADO>);
+    return m.EvaluarAcceso(sol)
+  );
+
+  public usuarioDuplicado : () ==> ()
+  usuarioDuplicado() ==
+  (
+    dcl m : MotorZeroTrust := MotorDePrueba();
+    m.RegistrarUsuario(new Usuario(mk_token(1), <USUARIO>, true))
+  );
+
+  public recursoDuplicado : () ==> ()
+  recursoDuplicado() ==
+  (
+    dcl m : MotorZeroTrust := MotorDePrueba();
+    m.RegistrarRecurso(new Recurso(mk_token(10), "Otro", false))
+  );
+
+  public permisoSinUsuario : () ==> ()
+  permisoSinUsuario() ==
+  (
+    dcl m : MotorZeroTrust := MotorDePrueba();
+    m.ConcederPermiso(mk_token(99), mk_token(10))
+  );
+
+  public permisoSinRecurso : () ==> ()
+  permisoSinRecurso() ==
+  (
+    dcl m : MotorZeroTrust := MotorDePrueba();
+    m.ConcederPermiso(mk_token(1), mk_token(99))
+  );
+
 end Pruebas
