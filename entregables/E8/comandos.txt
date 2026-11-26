@@ -1,0 +1,14 @@
+set
+init
+tcov reset
+create p := new Pruebas()
+print p.run()
+print p.decisionesE8()
+print p.idRepetido()
+print p.usuarioDuplicado()
+print p.recursoDuplicado()
+print p.permisoSinUsuario()
+print p.permisoSinRecurso()
+print p.caso5()
+tcov write e8_final.tc
+rtinfo e8_final.tc

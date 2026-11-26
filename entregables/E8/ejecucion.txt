@@ -1,0 +1,94 @@
+The VDM++ Toolbox v9.0.7 - Sat 09-Jun-2018 10:11:21 +0900
+VDM Toolbox is currently developed with the cooperation of Research Center
+for Architecture-Oriented Formal Methods of Kyusyu University.
+Parsing "C:\Users\TEC\Desktop\Zero-Trust-VDM\model\MotorZeroTrust.vpp" (Plain Text) ... done
+Parsing "C:\Users\TEC\Desktop\Zero-Trust-VDM\model\Pruebas.vpp" (Plain Text) ... done
+Parsing "C:\Users\TEC\Desktop\Zero-Trust-VDM\model\Recurso.vpp" (Plain Text) ... done
+Parsing "C:\Users\TEC\Desktop\Zero-Trust-VDM\model\SolicitudAcceso.vpp" (Plain Text) ... done
+Parsing "C:\Users\TEC\Desktop\Zero-Trust-VDM\model\Tipos.vpp" (Plain Text) ... done
+Parsing "C:\Users\TEC\Desktop\Zero-Trust-VDM\model\Usuario.vpp" (Plain Text) ... done
+vpp> set
+dtc              on
+inv              on
+pre              on
+post             on
+assertion        off
+full             off
+vdm10            off
+priority         off
+maxinstr         1000
+primaryalgorithm instruction_number_slice
+sep              on
+seed             -1
+ppr              on
+interfaces
+context          off
+exception        off
+profile          off
+calllog          off
+measure          off
+mapone           off
+oldreverse       off
+vpp> init
+Initializing specification ... done
+vpp> tcov reset
+vpp> create p := new Pruebas()
+vpp> print p.run()
+(no return value)
+vpp> print p.decisionesE8()
+[ <AUTORIZADO>, <DENEGADO>, <DENEGADO>, <DENEGADO>, <DENEGADO>, <DENEGADO> ]
+vpp> print p.idRepetido()
+C:\Users\TEC\Desktop\Zero-Trust-VDM\model\MotorZeroTrust.vpp, l. 85, c. 5:
+  Run-Time Error 58: The pre-condition evaluated to false
+vpp> print p.usuarioDuplicado()
+C:\Users\TEC\Desktop\Zero-Trust-VDM\model\MotorZeroTrust.vpp, l. 26, c. 13:
+  Run-Time Error 58: The pre-condition evaluated to false
+vpp> print p.recursoDuplicado()
+C:\Users\TEC\Desktop\Zero-Trust-VDM\model\MotorZeroTrust.vpp, l. 32, c. 13:
+  Run-Time Error 58: The pre-condition evaluated to false
+vpp> print p.permisoSinUsuario()
+C:\Users\TEC\Desktop\Zero-Trust-VDM\model\MotorZeroTrust.vpp, l. 49, c. 5:
+  Run-Time Error 58: The pre-condition evaluated to false
+vpp> print p.permisoSinRecurso()
+C:\Users\TEC\Desktop\Zero-Trust-VDM\model\MotorZeroTrust.vpp, l. 49, c. 5:
+  Run-Time Error 58: The pre-condition evaluated to false
+vpp> print p.caso5()
+C:\Users\TEC\Desktop\Zero-Trust-VDM\model\Pruebas.vpp, l. 77, c. 31:
+  Run-Time Error 300: Type invariant was broken
+    actual value: mk_SolicitudAcceso`SolicitudAcceso( mk_token( 900 ), mk_token( 1 ), mk_token( 10 ), mk_token( 50 ), true, 120, true, <PENDIENTE> )
+    expected type: SolicitudAcceso`SolicitudAcceso
+vpp> tcov write e8_final.tc
+vpp> rtinfo e8_final.tc
+  100%      1  Pruebas`run
+  100%      1  Pruebas`caso5
+  100%     11  Pruebas`Verifica
+  100%      1  Pruebas`idRepetido
+  100%      1  Pruebas`decisionesE8
+  100%      6  Pruebas`MotorDePrueba
+  100%      2  Pruebas`SolicitudBase
+  100%      1  Pruebas`recursoDuplicado
+  100%      1  Pruebas`usuarioDuplicado
+  100%      1  Pruebas`permisoSinRecurso
+  100%      1  Pruebas`permisoSinUsuario
+  100%  Pruebas
+  100%     17  Recurso`GetId
+  100%      9  Recurso`Recurso
+  100%      9  Recurso`EsCritico
+  100%      1  Recurso`GetNombre
+  100%  Recurso
+  100%     31  Usuario`GetId
+  100%      1  Usuario`GetRol
+  100%     15  Usuario`Usuario
+  100%     11  Usuario`EsActivo
+  100%      1  Usuario`GetPermisos
+  100%      2  Usuario`AsignarPermiso
+  100%  Usuario
+  100%     13  MotorZeroTrust`EvaluarAcceso
+  100%      2  MotorZeroTrust`RevocarAcceso
+  100%     16  MotorZeroTrust`ConcederPermiso
+  100%      9  MotorZeroTrust`RegistrarRecurso
+  100%     15  MotorZeroTrust`RegistrarUsuario
+  100%  MotorZeroTrust
+
+Total Coverage: 100%
+vpp> quit
