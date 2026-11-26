@@ -1,36 +1,77 @@
 @startuml
-' Etapa E4: Diagrama de clases del Sistema de Control de Acceso Zero Trust
+' Diagrama de clases actualizado del Sistema de Control de Acceso Zero Trust (VDM++)
+
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+
+class Tipos {
+  + <<quote>> EstadoAcceso = <PENDIENTE> | <EVALUANDO> | <AUTORIZADO> | <DENEGADO> | <REVOCADO>
+  + <<quote>> NivelRiesgo = <BAJO> | <MEDIO> | <ALTO> | <CRITICO>
+  + <<quote>> Rol = <USUARIO> | <ADMINISTRADOR> | <AUDITOR>
+  + <<token>> UsuarioId
+  + <<token>> RecursoId
+  + <<token>> DispositivoId
+  + <<token>> SolicitudId
+}
 
 class Usuario {
   - id : UsuarioId
   - rol : Rol
   - activo : bool
   - permisos : set of RecursoId
+  + Usuario(uid : UsuarioId, r : Rol, a : bool) : Usuario
   + GetId() : UsuarioId
   + GetRol() : Rol
   + EsActivo() : bool
   + GetPermisos() : set of RecursoId
-  + AsignarPermiso(RecursoId)
+  + AsignarPermiso(rid : RecursoId) : ()
 }
 
 class Recurso {
   - id : RecursoId
   - nombre : seq of char
   - critico : bool
+  + Recurso(rid : RecursoId, n : seq of char, c : bool) : Recurso
   + GetId() : RecursoId
   + GetNombre() : seq of char
   + EsCritico() : bool
 }
 
+class SolicitudAcceso <<record>> {
+  + id : Tipos`SolicitudId
+  + usuario : Tipos`UsuarioId
+  + recurso : Tipos`RecursoId
+  + dispositivo : Tipos`DispositivoId
+  + dispositivoValido : bool
+  + riesgo : nat
+  + mfaVerificado : bool
+  + estado : Tipos`EstadoAcceso
+  --
+  {inv: riesgo <= 100}
+}
+
 class MotorZeroTrust {
-  - historial : seq of SolicitudAcceso
+  - historial : seq of SolicitudAcceso`SolicitudAcceso
   - usuarios : map UsuarioId to Usuario
   - recursos : map RecursoId to Recurso
   - permisos : map UsuarioId to set of RecursoId
+  --
+  + RegistrarUsuario(u : Usuario) : ()
+  + RegistrarRecurso(r : Recurso) : ()
+  + ConcederPermiso(uid : UsuarioId, rid : RecursoId) : ()
+  + EvaluarAcceso(sol : SolicitudAcceso`SolicitudAcceso) : EstadoAcceso
+  + RevocarAcceso(solId : SolicitudId) : bool
+  --
+  {inv: dom permisos subset dom usuarios and\n forall uid in set dom permisos & permisos(uid) subset dom recursos}
 }
 
-Usuario --> Recurso : solicita >
-MotorZeroTrust --> Usuario : evalua >
-MotorZeroTrust --> Recurso : protege >
+Tipos <|-- Usuario
+Tipos <|-- Recurso
+Tipos <|-- MotorZeroTrust
+Tipos <.. SolicitudAcceso : usa tipos calificados >
+
+MotorZeroTrust "1" o-- "*" Usuario : usuarios >
+MotorZeroTrust "1" o-- "*" Recurso : recursos >
+MotorZeroTrust "1" *-- "*" SolicitudAcceso : historial >
 
 @enduml
