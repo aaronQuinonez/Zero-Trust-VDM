@@ -1,0 +1,109 @@
+-- E9 - Abstraccion finita de MotorZeroTrust.vpp.
+-- Una solicitud nueva; datos fijos durante toda la evaluacion.
+-- NuSMV 2.7.1. No modifica el codigo VDM++.
+MODULE main
+
+FROZENVAR
+  usuarioRegistrado : boolean;
+  usuarioActivo : boolean;
+  recursoRegistrado : boolean;
+  permiso : boolean;
+  dispositivoValido : boolean;
+  riesgo : 0..100;
+  recursoCritico : boolean;
+  mfaVerificado : boolean;
+
+VAR
+  estado : {PENDIENTE, EVALUANDO, AUTORIZADO, DENEGADO, REVOCADO};
+  estadoAnterior : {PENDIENTE, EVALUANDO, AUTORIZADO, DENEGADO, REVOCADO};
+  solicitarRevocacion : boolean;
+  registros : 0..1;
+
+-- Un permiso solo puede referirse a entidades registradas (E6).
+-- Los demas datos se eligen libremente en el estado inicial.
+INIT permiso -> (usuarioRegistrado & recursoRegistrado)
+
+DEFINE
+  reglasValidas :=
+    usuarioRegistrado & usuarioActivo & recursoRegistrado &
+    permiso & dispositivoValido & (riesgo < 80) &
+    (!recursoCritico | mfaVerificado);
+
+ASSIGN
+  init(estado) := PENDIENTE;
+  next(estado) := case
+    estado = PENDIENTE : EVALUANDO;
+    estado = EVALUANDO & reglasValidas : AUTORIZADO;
+    estado = EVALUANDO & !reglasValidas : DENEGADO;
+    estado = AUTORIZADO & solicitarRevocacion : REVOCADO;
+    TRUE : estado;
+  esac;
+
+  init(estadoAnterior) := PENDIENTE;
+  next(estadoAnterior) := estado;
+
+  -- Una llamada de revocacion puede ocurrir o no en cada paso.
+  -- No se obliga a revocar todas las autorizaciones.
+  init(solicitarRevocacion) := {TRUE, FALSE};
+  next(solicitarRevocacion) := {TRUE, FALSE};
+
+  -- Abstrae la longitud del historial para una sola solicitud.
+  init(registros) := 0;
+  next(registros) := case
+    estado = EVALUANDO : 1;
+    TRUE : registros;
+  esac;
+
+-- P1: seguridad. G = siempre.
+LTLSPEC NAME seguridad_autorizacion :=
+  G (estado = AUTORIZADO -> reglasValidas)
+
+-- P2: progreso. F = en algun momento futuro.
+-- Se asume que la evaluacion comienza y termina sin bloqueos externos.
+LTLSPEC NAME evaluacion_finaliza :=
+  G (estado = EVALUANDO -> F (estado = AUTORIZADO | estado = DENEGADO))
+
+-- P3: el primer paso a REVOCADO solo puede venir de AUTORIZADO.
+-- La permanencia posterior en REVOCADO es valida.
+LTLSPEC NAME origen_revocacion :=
+  G ((estado = REVOCADO & estadoAnterior != REVOCADO) ->
+     estadoAnterior = AUTORIZADO)
+
+-- P4: una llamada explicita sobre una autorizacion revoca al siguiente paso.
+LTLSPEC NAME revocacion_solicitada :=
+  G ((estado = AUTORIZADO & solicitarRevocacion) -> X (estado = REVOCADO))
+
+-- P5: revocar conserva la cantidad de registros.
+LTLSPEC NAME historial_en_revocacion :=
+  G ((estado = AUTORIZADO & solicitarRevocacion & registros = 1) ->
+     X (estado = REVOCADO & registros = 1))
+
+-- P6: toda decision registrada corresponde a una entrada del historial.
+LTLSPEC NAME registro_decision :=
+  G ((estado = AUTORIZADO | estado = DENEGADO | estado = REVOCADO) ->
+     registros = 1)
+
+-- Alcanzabilidad condicionada al contexto inicial.
+-- NuSMV comprueba cada CTLSPEC en TODOS los estados iniciales.
+-- Los datos FROZENVAR no cambian; no se exige autorizar datos invalidos.
+CTLSPEC NAME autorizado_alcanzable :=
+  reglasValidas -> EF (estado = AUTORIZADO)
+CTLSPEC NAME denegado_alcanzable :=
+  !reglasValidas -> EF (estado = DENEGADO)
+CTLSPEC NAME revocado_alcanzable :=
+  reglasValidas -> EF (estado = REVOCADO)
+
+-- Casos frontera y MFA manteniendo cumplidas las demas reglas.
+CTLSPEC NAME limite_79 :=
+  (reglasValidas & riesgo = 79) -> EF (estado = AUTORIZADO)
+CTLSPEC NAME limite_80 :=
+  (riesgo = 80 & usuarioRegistrado & usuarioActivo & recursoRegistrado &
+   permiso & dispositivoValido & (!recursoCritico | mfaVerificado)) ->
+  EF (estado = DENEGADO)
+CTLSPEC NAME mfa_obligatorio :=
+  (recursoCritico & !mfaVerificado & usuarioRegistrado & usuarioActivo &
+   recursoRegistrado & permiso & dispositivoValido & riesgo < 80) ->
+  EF (estado = DENEGADO)
+CTLSPEC NAME mfa_no_requerido :=
+  (reglasValidas & !recursoCritico & !mfaVerificado) ->
+  EF (estado = AUTORIZADO)
